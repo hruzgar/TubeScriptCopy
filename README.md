@@ -10,7 +10,7 @@ One time, two times, three times it's ok. But the more you do it, you question y
 
 **And there is! (a better solution)**
 
-This userscript will do that all of the manual work for you with the click of a single (nicely designed) button!
+This userscript will do all of the manual work for you with the click of a single (nicely designed) button!
 
 ### So how does it work?
 
