@@ -1,14 +1,11 @@
 // ==UserScript==
-// @name         YouTube Transcript Copier v2.0
-// @namespace    http://tampermonkey.net/
-// @version      2.0.0
+// @name         TubeScriptCopy
+// @version      1.0.0
 // @description  Copy YouTube video transcripts with timestamps
 // @author       Hasan Rüzgar
 // @match        https://www.youtube.com/watch*
 // @grant        GM_setClipboard
 // @license      MIT
-// @downloadURL
-// @updateURL
 // ==/UserScript==
 
 // Inspired by https://greasyfork.org/en/scripts/483035-youtube-transcript-copier
