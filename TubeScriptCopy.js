@@ -18,7 +18,7 @@
 
     function insertCopyButton() {
         // Locate the "Report" menu item (to later add the "Copy Transcript" button under it)
-        const reportMenuItemXPath = '/html/body/ytd-app/ytd-popup-container/tp-yt-iron-dropdown/div/ytd-menu-popup-renderer/tp-yt-paper-listbox/ytd-menu-service-item-renderer[4]';
+        const reportMenuItemXPath = "//ytd-menu-service-item-renderer[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'report')]";
         const reportMenuItem = document.evaluate(reportMenuItemXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
         if (!reportMenuItem) {
@@ -106,7 +106,7 @@
     window.addEventListener('load', function () {
         console.log('Page loaded. Attempting to insert Copy Transcript button...');
         const observer = new MutationObserver(() => {
-            const reportMenuItemXPath = '/html/body/ytd-app/ytd-popup-container/tp-yt-iron-dropdown/div/ytd-menu-popup-renderer/tp-yt-paper-listbox/ytd-menu-service-item-renderer[4]';
+            const reportMenuItemXPath = "//ytd-menu-service-item-renderer[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'report')]";
             const reportMenuItem = document.evaluate(reportMenuItemXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
             if (reportMenuItem) {
                 observer.disconnect();
