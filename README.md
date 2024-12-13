@@ -14,7 +14,9 @@ This userscript will do that all of the manual work for you with the click of a 
 
 ### So how does it work?
 
-After installing the script, when a youtube video page is loaded, you will see a new menu item when you click on "..." with the title "Copy Transcript". 
+After installing the script, when a youtube video page is loaded, you will see a new menu item when you click on "..." with the title "Copy Transcript". It will look like this:
+
+![](https://github.com/hruzgar/TubeScriptCopy/blob/main/showcase.png)
 
 And as you might've already guessed, clicking this button will do the rest for you. And all of this open source and running locally in your browser! Isn't that great?
 
