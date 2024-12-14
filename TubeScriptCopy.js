@@ -14,7 +14,7 @@
 (function () {
     'use strict';
 
-    console.log('Script loaded: TubeScriptCopy');
+    console.log('Tampermonkey script loaded: YouTube Transcript Copier v2.0');
 
     function insertCopyButton() {
         // Locate the "Report" menu item (to later add the "Copy Transcript" button under it)
@@ -37,9 +37,13 @@
             width: 100%; /* Makes it occupy the full width of its container */
             padding: 10px 0;
             background-color: #282828;
-            color: white;
+            color: #f1f1f1;
             border: none;
             cursor: pointer;
+            font-weight: 400;
+            font-family: 'Roboto', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 20px;
         `;
 
         // Change background color on hover and click
