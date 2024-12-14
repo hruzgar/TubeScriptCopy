@@ -35,9 +35,9 @@
         copyButton.style = `
             display: block; /* Ensures the element behaves as a block, taking full width */
             width: 100%; /* Makes it occupy the full width of its container */
-            padding: 10px 0;
+            padding: 8px 0;
             background-color: #282828;
-            color: #f1f1f1;
+            color: #e2e2e2;
             border: none;
             cursor: pointer;
             font-weight: 400;
