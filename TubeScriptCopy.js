@@ -14,7 +14,7 @@
 (function () {
     'use strict';
 
-    console.log('Tampermonkey script loaded: YouTube Transcript Copier v2.0');
+    console.log('Script loaded: TubeScriptCopy');
 
     function insertCopyButton() {
         // Locate the "Report" menu item (to later add the "Copy Transcript" button under it)
