@@ -15,10 +15,6 @@ After installing the script, when a youtube video page is loaded, you will see a
 
 And as you might've already guessed, clicking this button will do the rest for you. And all of this open source and running locally in your browser! Isn't that great?
 
-Also I have to give credits to the developer of [this userscript I got inspired from](https://greasyfork.org/en/scripts/483035-youtube-transcript-copier): Time Eternity
-
-Without this inspiration, I don't know if I would've tried to create something like this even though it was pretty easy. I also don't know if "Time Eternity" is a real name but either way.. Thanks for reading all this and enjoy the script! 
-
 ***
 
 ### Motivation:
