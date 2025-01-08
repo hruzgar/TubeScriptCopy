@@ -1,4 +1,4 @@
-### Installation:
+### Installation
 1. Install the [Violentmonkey](https://violentmonkey.github.io/get-it/) browser extension if you don't have it already (greasemonkey or tampermonkey also work, but violentmonkey is recommended).
 2. Go to your "Installed Scripts" Page in Violentmonkey, then click on "+" and "Install from URL"
 3. Enter this URL and click ok:
