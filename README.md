@@ -31,11 +31,11 @@ ChatGPT and other tools are very good at helping you out at moments like this. B
 
 To get the transcript of a video manually, you have to click the video description, then "show transcript", select the full transcript with your mouse or with shift and then CTRL + C.
 
-One time, two times, three times it's ok. But the more you do it, you question yourself if there is not a better solution?
+One time, two times, three times it's ok. But the more you do it, you question yourself: Is there not a better solution? Some way to automate it for instance?
 
 **And there is! (a better solution)**
 
-This userscript will do all of the manual work for you with the click of a single (nicely designed) button!
+This userscript will do all of the manual work for you with the click of a single (nicely designed and fitted) button, enjoy!
 
 
 
