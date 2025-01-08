@@ -17,7 +17,7 @@ And as you might've already guessed, clicking this button will do the rest for y
 
 ***
 
-### Motivation:
+### Motivation
 
 There is millions of youtube videos. But humans only have a finite lifetime. 
 
