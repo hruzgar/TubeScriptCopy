@@ -29,9 +29,7 @@ To get the transcript of a video manually, you have to click the video descripti
 
 One time, two times, three times it's ok. But the more you do it, you question yourself: Is there not a better solution? Some way to automate it for instance?
 
-**And there is! (a better solution)**
-
-This userscript will do all of the manual work for you with the click of a single (nicely designed and fitted) button, enjoy!
+And with this userscript there is!
 
 
 
