@@ -20,7 +20,7 @@
 
     // "Copy Transcript" will be added under the "Report" menu item.
     // english, german, spanish and french. More languages can be added later.
-    // language dependance is not the best. But currently best solution i found.
+    // language dependance is not good. But currently the best solution i found.
     const reportMenuItemXPath = `//ytd-menu-service-item-renderer[
             contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'report') or
             contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'melden') or
@@ -110,9 +110,6 @@
 
         copyButton.appendChild(iconElement);
         copyButton.appendChild(textSpan);
-
-
-
         console.log('Copy Transcript button created:', copyButton);
 
         reportMenuItem.parentNode.insertBefore(copyButton, reportMenuItem.nextSibling);
