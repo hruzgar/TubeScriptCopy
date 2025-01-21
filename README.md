@@ -29,7 +29,7 @@ To get the transcript of a video manually, you have to click the video descripti
 
 One time, two times, three times it's ok. But the more you do it, you question yourself: Is there not a better solution? Some way to automate it for instance?
 
-And with this userscript there is!
+And that's what this script does!
 
 
 
