@@ -13,7 +13,7 @@ After installing the script, when a youtube video page is loaded, you will see a
 
 ![](https://github.com/hruzgar/TubeScriptCopy/blob/main/showcasee.png)
 
-And as you might've already guessed, clicking this button will do the rest for you. And all of this open source and running locally in your browser! Isn't that great?
+And as you might've already guessed, clicking this button will do the rest for you. And all of this open source and running locally in your browser, isn't that great?
 
 ***
 
