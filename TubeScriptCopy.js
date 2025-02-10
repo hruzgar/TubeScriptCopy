@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         TubeScriptCopy
-// @version      1.2.0
+// @version      1.2.4
 // @description  Copy YouTube video transcripts with timestamps
 // @author       Hasan Rüzgar
 // @match        https://www.youtube.com/watch*
@@ -9,29 +9,32 @@
 // @license      MIT
 // ==/UserScript==
 
-// Inspired by https://greasyfork.org/en/scripts/483035-youtube-transcript-copier
-// Even though the code was completely changed, I would not have created this without the previous efforts.
-
 (function() {
     'use strict';
     const { VM } = window;
 
     console.log('Script loaded: TubeScriptCopy');
 
-    // "Copy Transcript" will be added under the "Report" menu item.
-    // english, german, spanish and french. More languages can be added later.
-    // language dependance is not good. But currently the best solution i found.
+    // XPath to find the "Report" menu item (works for various languages but might have to add more in the future)
     const reportMenuItemXPath = `//ytd-menu-service-item-renderer[
-            contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'report') or
-            contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'melden') or
-            contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'signaler') or
-            contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'denunciar')
-            ]`;
-    const titleElementXPath = '//*[@id="title"]/h1/yt-formatted-string';
+        contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'report') or
+        contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'melden') or
+        contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'signaler') or
+        contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'denunciar')
+    ]`;
+
+    // Selector for the transcript panel that shows up after clicking “Show transcript”
     const transcriptPanelSelector = 'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-searchable-transcript"]';
+
+    // XPath for the “Show transcript” button
     const showTranscriptButtonXPath = '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[2]/ytd-watch-metadata/div/div[4]/div[1]/div/ytd-text-inline-expander/div[2]/ytd-structured-description-content-renderer/div/ytd-video-description-transcript-section-renderer/div[3]/div/ytd-button-renderer/yt-button-shape/button';
 
+    // Regular expression for YouTube video URLs (e.g. https://www.youtube.com/watch?v=fjySD7_2HJs)
+    const videoUrlRegex = /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]+(?:&.*)?$/;
 
+    // --------------------------------------------------
+    // Helper: Create SVG Icon for the Copy Button
+    // --------------------------------------------------
     function createIconElement() {
         const iconColor = "#ffffff";
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -40,7 +43,7 @@
         svg.setAttribute("id", "copy");
         svg.style.width = "20px";
         svg.style.height = "20px";
-        svg.style.marginRight = "18px"; // Add some space between icon and text.
+        svg.style.marginRight = "18px";
         svg.style.marginLeft = "2px";
 
         const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -70,11 +73,73 @@
         return svg;
     }
 
+    // --------------------------------------------------
+    // Wait for the Transcript Panel to Finish Loading
+    // --------------------------------------------------
+    // This function waits until the transcript panel's inner text stops changing
+    // for a specified delay (stableDelay) or until a maximum timeout is reached.
+    function waitForTranscriptStability(callback, stableDelay = 1000, timeout = 10000) {
+        const transcriptPanel = document.querySelector(transcriptPanelSelector);
+        if (!transcriptPanel) {
+            console.log("Transcript panel not found for stability check.");
+            return;
+        }
+        let lastText = transcriptPanel.innerText;
+        let stableTimer = null;
+        const startTime = Date.now();
+
+        const observer = new MutationObserver(() => {
+            const currentText = transcriptPanel.innerText;
+            // If the text has changed, reset the timer.
+            if (currentText !== lastText) {
+                lastText = currentText;
+                if (stableTimer) {
+                    clearTimeout(stableTimer);
+                }
+                stableTimer = setTimeout(() => {
+                    observer.disconnect();
+                    console.log("Transcript panel text is stable.");
+                    callback();
+                }, stableDelay);
+            }
+            // If waiting too long, give up and proceed.
+            if (Date.now() - startTime > timeout) {
+                console.log("Transcript stability timeout reached.");
+                observer.disconnect();
+                if (stableTimer) clearTimeout(stableTimer);
+                callback();
+            }
+        });
+        observer.observe(transcriptPanel, { childList: true, subtree: true, characterData: true });
+
+        // In case no mutations occur at all, trigger the callback after stableDelay.
+        stableTimer = setTimeout(() => {
+            observer.disconnect();
+            console.log("Transcript panel text is stable (initial check).");
+            callback();
+        }, stableDelay);
+    }
+
+    // --------------------------------------------------
+    // Insert the "Copy Transcript" Button
+    // --------------------------------------------------
     function insertCopyButton() {
-        const reportMenuItem = document.evaluate(reportMenuItemXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        const reportMenuItem = document.evaluate(
+            reportMenuItemXPath,
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+        ).singleNodeValue;  // Removed erroneous parentheses here
 
         if (!reportMenuItem) {
             console.log('Report menu item not found. Aborting insertion.');
+            return;
+        }
+
+        // Avoid duplicate button insertion.
+        if (document.getElementById('copy-transcript-button')) {
+            console.log('Copy Transcript button already exists.');
             return;
         }
 
@@ -96,17 +161,17 @@
             fontFamily: "'Roboto', Arial, sans-serif",
             fontSize: '14px',
             lineHeight: '20px',
-            textAlighn: 'left'
+            textAlign: 'left'
         });
 
-        copyButton.addEventListener('mouseenter', () => copyButton.style.backgroundColor = '#535353'); // Hover color
-        copyButton.addEventListener('mouseleave', () => copyButton.style.backgroundColor = '#282828'); // Original color
-        copyButton.addEventListener('mousedown', () => copyButton.style.backgroundColor = '#6b6b6b'); // Click color
-        copyButton.addEventListener('mouseup', () => copyButton.style.backgroundColor = '#535353'); // Return to Hover color
+        copyButton.addEventListener('mouseenter', () => copyButton.style.backgroundColor = '#535353');
+        copyButton.addEventListener('mouseleave', () => copyButton.style.backgroundColor = '#282828');
+        copyButton.addEventListener('mousedown', () => copyButton.style.backgroundColor = '#6b6b6b');
+        copyButton.addEventListener('mouseup', () => copyButton.style.backgroundColor = '#535353');
 
         const iconElement = createIconElement();
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'Copy Transcript';
+        textSpan.textContent = 'Copy TS';
 
         copyButton.appendChild(iconElement);
         copyButton.appendChild(textSpan);
@@ -121,8 +186,17 @@
         });
     }
 
+    // --------------------------------------------------
+    // Click the "Show transcript" Button and Copy Transcript
+    // --------------------------------------------------
     function copyTranscript() {
-        const showTranscriptButton = document.evaluate(showTranscriptButtonXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        const showTranscriptButton = document.evaluate(
+            showTranscriptButtonXPath,
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+        ).singleNodeValue;
 
         if (!showTranscriptButton) {
             console.log('Show Transcript button not found.');
@@ -133,69 +207,68 @@
         console.log('Found "Show transcript" button:', showTranscriptButton);
         showTranscriptButton.click();
 
+        // Wait until the transcript panel appears...
         VM.observe(document.body, () => {
             const transcriptPanel = document.querySelector(transcriptPanelSelector);
-            if (transcriptPanel && transcriptPanel.innerText.trim() !== '') {
-                console.log('Transcript panel found and loaded:', transcriptPanel);
-                GM_setClipboard(transcriptPanel.innerText, 'text');
-                console.log('Transcript copied to clipboard.');
-                alert('Transcript copied to clipboard!');
-                return true;
-            } else {
-                console.log('Waiting for transcript panel to load...');
-            }
-        });
-    }
-
-    function handleTitleChange() {
-        console.log("YouTube video title changed");
-
-        VM.observe(document.body, () => {
-            const reportMenuItem = document.evaluate(reportMenuItemXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            if (reportMenuItem) {
-                console.log('Menu popup detected. Inserting Copy Transcript button if not already present...');
-                if (!document.getElementById('copy-transcript-button')) {
-                    insertCopyButton();
-                }
-                return true;
-            }
-        });
-    }
-
-    function observeTitleChanges() {
-        console.log('Starting to observe for title element changes...');
-
-        const waitForTitleElement = () => {
-            const titleElement = document.evaluate(titleElementXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            if (titleElement) {
-                console.log("Title element found:", titleElement);
-                let lastTitle = titleElement.textContent;
-                handleTitleChange();
-
-                VM.observe(titleElement, () => {
-                    if (titleElement.textContent !== lastTitle) {
-                        lastTitle = titleElement.textContent;
-                        console.log("YouTube video title changed to:", lastTitle);
-                        handleTitleChange();
-                    }
+            if (transcriptPanel) {
+                console.log("Transcript panel detected, waiting for it to finish loading...");
+                // Once detected, wait until the transcript text stabilizes.
+                waitForTranscriptStability(() => {
+                    const finalTranscript = transcriptPanel.innerText;
+                    console.log('Transcript fully loaded:', finalTranscript);
+                    GM_setClipboard(finalTranscript, 'text');
+                    console.log('Transcript copied to clipboard.');
+                    alert('Transcript copied to clipboard!');
                 });
-
-                return true;
-            } else {
-                console.log("Body Changed. But title element not found yet, waiting...");
-                return false;
+                return true; // Stop observing
             }
-        };
-
-        if (!waitForTitleElement()) {
-            // Call waitForTitleElement each time document.body changes.
-            VM.observe(document.body, waitForTitleElement);
-        }
+        });
     }
 
-    window.addEventListener('load', function() {
-        console.log('Page loaded. Start observing title changes...');
-        observeTitleChanges();
+    // --------------------------------------------------
+    // Handle URL Change: Wait for YouTube Navigation to Finish
+    // --------------------------------------------------
+    function handleUrlChange() {
+        console.log("URL changed to:", location.href);
+        if (!videoUrlRegex.test(location.href)) {
+            console.log("URL does not match YouTube video URL pattern. Skipping.");
+            return;
+        }
+        console.log("Detected a YouTube video URL. Waiting for the report menu item...");
+
+        // Wait for the "Report" menu item to appear.
+        VM.observe(document.body, () => {
+            const reportMenuItem = document.evaluate(
+                reportMenuItemXPath,
+                document,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                null
+            ).singleNodeValue;
+            if (reportMenuItem) {
+                console.log("Report menu item detected:", reportMenuItem);
+                // After detecting, wait an extra 2 seconds for the page to settle.
+                setTimeout(() => {
+                    insertCopyButton();
+                }, 1000);
+                return true; // Stop further observing.
+            }
+        });
+    }
+
+    // --------------------------------------------------
+    // Listen for YouTube's SPA Navigation Event
+    // --------------------------------------------------
+    document.addEventListener('yt-navigate-finish', () => {
+        console.log('yt-navigate-finish event fired.');
+        handleUrlChange();
     });
 
+    // Also run on initial page load.
+    window.addEventListener('load', () => {
+        console.log('Page loaded.');
+        if (videoUrlRegex.test(location.href)) {
+            handleUrlChange();
+        }
+    });
 })();
