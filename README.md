@@ -1,3 +1,10 @@
+# TubeScriptCopy
+
+![](https://github.com/hruzgar/TubeScriptCopy/blob/main/showcasee.png)
+
+**for the newest version, code was completely adjusted to the newest youtube changes and bugs were fixed. Enjoy!**
+
+
 ### Installation
 1. Install the [Violentmonkey](https://violentmonkey.github.io/get-it/) browser extension if you don't have it already (greasemonkey or tampermonkey also work, but violentmonkey is recommended).
 2. Go to your "Installed Scripts" Page in Violentmonkey, then click on "+" and "Install from URL"
@@ -9,11 +16,9 @@ https://raw.githubusercontent.com/hruzgar/TubeScriptCopy/refs/heads/main/TubeScr
 
 ### So how does it work?
 
-After installing the script, when a youtube video page is loaded, you will see a new menu item when you click on "..." with the title "Copy Transcript". It will look like this:
+After installing the script, when a youtube video page is loaded, you will see a new menu item when you click on "..." with the title "Copy TS".
 
-![](https://github.com/hruzgar/TubeScriptCopy/blob/main/showcasee.png)
-
-And as you might've already guessed, clicking this button will do the rest for you. And all of this open source and running locally in your browser, isn't that great?
+And as you might've already guessed, clicking this button will do the rest for you.
 
 ***
 
