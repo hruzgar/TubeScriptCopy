@@ -27,7 +27,7 @@
     const transcriptPanelSelector = 'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-searchable-transcript"]';
 
     // XPath for the “Show transcript” button
-    const showTranscriptButtonXPath = '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[2]/ytd-watch-metadata/div/div[4]/div[1]/div/ytd-text-inline-expander/div[2]/ytd-structured-description-content-renderer/div/ytd-video-description-transcript-section-renderer/div[3]/div/ytd-button-renderer/yt-button-shape/button';
+    const showTranscriptButtonXPath = '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[2]/ytd-watch-metadata/div/div[4]/div[1]/div/ytd-text-inline-expander/div[3]/ytd-structured-description-content-renderer/div[3]/ytd-video-description-transcript-section-renderer/div[3]/div/ytd-button-renderer/yt-button-shape/button';
 
     // Regular expression for YouTube video URLs (e.g. https://www.youtube.com/watch?v=fjySD7_2HJs)
     const videoUrlRegex = /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]+(?:&.*)?$/;
