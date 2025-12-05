@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         TubeScriptCopy
-// @version      1.2.4
+// @version      1.2.5
 // @description  Copy YouTube video transcripts with timestamps
 // @author       Hasan Rüzgar
 // @match        https://www.youtube.com/watch*
